@@ -9,10 +9,8 @@ import torch.nn as nn
 
 
 class VariationalAutoencoder(nn.Module):
-    def __init__(self, pretrained_path, subfolder, scale_factor):
+    def __init__(self, pretrained_path, subfolder):
         super().__init__()
-        self.scale_factor = scale_factor
-
         self.model = diffusers.AutoencoderKL.from_pretrained(
             pretrained_path, subfolder=subfolder, use_safetensors=True)
         self.model.requires_grad_(False)
@@ -22,11 +20,11 @@ class VariationalAutoencoder(nn.Module):
     def encode(self, x):
         z = self.model.encode(x).latent_dist
         z = z.sample()
-        z = self.scale_factor * z
+        z = self.model.scaling_factor * z
         return z
 
     @torch.no_grad()
     def decode(self, z):
-        z = 1. / self.scale_factor * z
+        z = 1. / self.model.scaling_factor * z
         x = self.model.decode(z).sample
         return x

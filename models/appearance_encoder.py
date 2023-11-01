@@ -10,7 +10,8 @@ from diffusers.models.attention import BasicTransformerBlock
 
 class AppearanceEncoder(nn.Module):
     def __init__(self, attn_residual_block_idx, inner_dims, ctx_dims, embed_dims, heads, depth,
-                 to_self_attn, to_queries, to_keys, to_values, aspect_ratio, detach_input):
+                 to_self_attn, to_queries, to_keys, to_values, aspect_ratio, detach_input,
+                 convin_kernel_size, convin_stride, convin_padding):
         super().__init__()
         self.attn_residual_block_idx = attn_residual_block_idx
         self.inner_dims = inner_dims
@@ -27,7 +28,8 @@ class AppearanceEncoder(nn.Module):
         self.zero_conv_outs = []
         self.blocks = []
         for inner_dim, embed_dim, ctx_dim, num_head in zip(inner_dims, self.embed_dims, self.ctx_dims, heads):
-            self.zero_conv_ins.append(nn.Conv2d(inner_dim, embed_dim, kernel_size=1, stride=1, padding=0))
+            self.zero_conv_ins.append(nn.Conv2d(inner_dim, embed_dim, kernel_size=convin_kernel_size,
+                                                stride=convin_stride, padding=convin_padding))
             self.zero_conv_outs.append(nn.Conv2d(embed_dim, ctx_dim, kernel_size=1, stride=1, padding=0))
             self.blocks.append(nn.Sequential(*[BasicTransformerBlock(
                 dim=embed_dim,
@@ -61,15 +63,14 @@ class AppearanceEncoder(nn.Module):
         additional_residuals = {}
 
         for i, block in enumerate(self.blocks):
-            W = int(int(features[0].shape[1] / self.aspect_ratio) ** 0.5)
-            H = W * self.aspect_ratio
-
             hidden_states = features[0]
             if self.detach_input:
                 hidden_states = hidden_states.detach()
 
-            hidden_states = features[0].permute(0, 2, 1).reshape(-1, self.inner_dims[i], H, W)
+            in_H = in_W = int(features[0].shape[1] ** 0.5)
+            hidden_states = features[0].permute(0, 2, 1).reshape(-1, self.inner_dims[i], in_H, in_W)
             hidden_states = self.zero_conv_ins[i](hidden_states)
+            H = W = hidden_states.shape[2]
             hidden_states = hidden_states.reshape(-1, self.embed_dims[i], H * W).permute(0, 2, 1)
 
             hidden_states = block(hidden_states)

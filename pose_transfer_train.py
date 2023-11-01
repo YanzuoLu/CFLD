@@ -60,7 +60,10 @@ class build_model(nn.Module):
             to_keys=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.TO_KEYS,
             to_values=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.TO_VALUES,
             aspect_ratio=cfg.INPUT.COND.IMG_SIZE[0] // cfg.INPUT.COND.IMG_SIZE[1],
-            detach_input=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.DETACH_INPUT
+            detach_input=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.DETACH_INPUT,
+            convin_kernel_size=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.CONVIN_KERNEL_SIZE,
+            convin_stride=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.CONVIN_STRIDE,
+            convin_padding=cfg.MODEL.APPEARANCE_GUIDANCE_CONFIG.CONVIN_PADDING
         )
 
         self.pose_encoder = PoseEncoder(
@@ -195,8 +198,7 @@ def main(cfg):
     # not trained, move to 16-bit to save memory
     vae = VariationalAutoencoder(
         pretrained_path=cfg.MODEL.FIRST_STAGE_CONFIG.PRETRAINED_PATH,
-        subfolder=cfg.MODEL.SUBFOLDER,
-        scale_factor=cfg.MODEL.FIRST_STAGE_CONFIG.SCALE_FACTOR
+        subfolder=cfg.MODEL.SUBFOLDER
     ).to(accelerator.device, dtype=weight_dtype)
     noise_scheduler = DDPMScheduler.from_pretrained(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH)
     inverse_noise_scheduler = DDIMInverseScheduler(
