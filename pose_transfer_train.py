@@ -306,9 +306,6 @@ def main(cfg):
                 accelerator.backward(loss)
                 if accelerator.sync_gradients:
                     global_step += 1
-                    if cfg.OPTIMIZER.MAX_GRAD_NORM > 0:
-                        params_to_clip = [p for p in model.parameters() if p.requires_grad]
-                        accelerator.clip_grad_norm_(params_to_clip, cfg.OPTIMIZER.MAX_GRAD_NORM)
                 optimizer.step()
                 lr_scheduler.step()
 
