@@ -1,0 +1,29 @@
+name: MSC
+channels:
+  - pytorch
+  - nvidia
+  - xformers
+  - defaults
+dependencies:
+  - python=3.10.11
+  - pip=23.1.2
+  - pytorch=2.0.1
+  - torchvision=0.15.2
+  - pytorch-cuda=11.7
+  - numpy=1.23.1
+  - xformers=0.0.21
+  - yacs=0.1.6
+  - pandas=2.0.3
+  - scikit-image=0.20.0
+  - pip:
+    - gpustat==1.1
+    - accelerate==0.23.0
+    - tensorboard==2.13.0
+    - wandb==0.15.11
+    - einops==0.3.0
+    - opencv-python==4.7.0.72
+    - timm==0.9.7
+    - diffusers==0.19.3
+    - safetensors==0.3.1
+    - scipy==1.10.1
+    - lpips==0.1.4

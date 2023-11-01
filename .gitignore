@@ -1,3 +1,11 @@
+# pretrained models
+*.safetensors
+*.pth
+*.bin
+
+# outputs
+outputs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
