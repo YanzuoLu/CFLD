@@ -18,7 +18,8 @@ import torch.nn.functional as F
 from accelerate import Accelerator
 from accelerate.tracking import TensorBoardTracker, WandBTracker
 from accelerate.utils import set_seed
-from diffusers import DDIMInverseScheduler, DDPMScheduler
+from diffusers import (DDIMInverseScheduler, EulerDiscreteScheduler,
+                       PNDMScheduler)
 from einops import rearrange
 from PIL import Image
 from scipy.linalg import sqrtm
@@ -235,6 +236,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -252,6 +254,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -269,6 +272,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -287,6 +291,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -307,6 +312,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents, noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -328,6 +334,7 @@ def sample(cfg, weight_dtype, accelerator, noise_scheduler, vae, unet, noisy_lat
 
         for t in noise_scheduler.timesteps:
             inputs = torch.cat([noisy_latents, noisy_latents, noisy_latents, noisy_latents], dim=0)
+            inputs = noise_scheduler.scale_model_input(inputs, timestep=t)
             with accelerator.autocast():
                 noise_pred = unet(sample=inputs, timestep=t, encoder_hidden_states=c_new,
                     down_block_additional_residuals=copy.deepcopy(down_block_additional_residuals),
@@ -428,7 +435,14 @@ def main(cfg):
         pretrained_path=cfg.MODEL.FIRST_STAGE_CONFIG.PRETRAINED_PATH,
         subfolder=cfg.MODEL.SUBFOLDER
     ).to(accelerator.device, dtype=weight_dtype)
-    noise_scheduler = DDPMScheduler.from_pretrained(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH)
+
+    if cfg.MODEL.SCHEDULER_CONFIG.NAME == "euler":
+        noise_scheduler = EulerDiscreteScheduler.from_pretrained(
+            os.path.join(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH, cfg.MODEL.SCHEDULER_CONFIG.NAME))
+    elif cfg.MODEL.SCHEDULER_CONFIG.NAME == "pndm":
+        noise_scheduler = PNDMScheduler.from_pretrained(
+            os.path.join(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH, cfg.MODEL.SCHEDULER_CONFIG.NAME))
+
     inverse_noise_scheduler = DDIMInverseScheduler(
         num_train_timesteps=noise_scheduler.num_train_timesteps,
         beta_start=noise_scheduler.beta_start,

@@ -16,7 +16,8 @@ import torch.nn as nn
 from accelerate import Accelerator
 from accelerate.tracking import TensorBoardTracker, WandBTracker
 from accelerate.utils import DistributedDataParallelKwargs, set_seed
-from diffusers import DDIMInverseScheduler, DDPMScheduler
+from diffusers import (DDIMInverseScheduler, EulerDiscreteScheduler,
+                       PNDMScheduler)
 from torch.utils.data import DataLoader
 
 from datasets import PisTrainDeepFashion
@@ -200,7 +201,13 @@ def main(cfg):
         pretrained_path=cfg.MODEL.FIRST_STAGE_CONFIG.PRETRAINED_PATH,
         subfolder=cfg.MODEL.SUBFOLDER
     ).to(accelerator.device, dtype=weight_dtype)
-    noise_scheduler = DDPMScheduler.from_pretrained(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH)
+
+    if cfg.MODEL.SCHEDULER_CONFIG.NAME == "euler":
+        noise_scheduler = EulerDiscreteScheduler.from_pretrained(
+            os.path.join(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH, cfg.MODEL.SCHEDULER_CONFIG.NAME))
+    elif cfg.MODEL.SCHEDULER_CONFIG.NAME == "pndm":
+        noise_scheduler = PNDMScheduler.from_pretrained(
+            os.path.join(cfg.MODEL.SCHEDULER_CONFIG.PRETRAINED_PATH, cfg.MODEL.SCHEDULER_CONFIG.NAME))
     inverse_noise_scheduler = DDIMInverseScheduler(
         num_train_timesteps=noise_scheduler.num_train_timesteps,
         beta_start=noise_scheduler.beta_start,
