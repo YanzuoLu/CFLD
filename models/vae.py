@@ -9,10 +9,9 @@ import torch.nn as nn
 
 
 class VariationalAutoencoder(nn.Module):
-    def __init__(self, pretrained_path, subfolder):
+    def __init__(self, pretrained_path):
         super().__init__()
-        self.model = diffusers.AutoencoderKL.from_pretrained(
-            pretrained_path, subfolder=subfolder, use_safetensors=True)
+        self.model = diffusers.AutoencoderKL.from_pretrained(pretrained_path, use_safetensors=True)
         self.model.requires_grad_(False)
         self.model.enable_slicing()
 

@@ -1900,7 +1900,7 @@ class UNet(nn.Module):
         super().__init__()
 
         self.model = ResidualUNet2DConditionModel.from_pretrained(
-            cfg.MODEL.UNET_CONFIG.PRETRAINED_PATH, subfolder=cfg.MODEL.SUBFOLDER, use_safetensors = True)
+            cfg.MODEL.UNET_CONFIG.PRETRAINED_PATH, use_safetensors = True)
         self.model.requires_grad_(False)
         self.model.enable_xformers_memory_efficient_attention()
 
