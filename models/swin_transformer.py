@@ -708,8 +708,17 @@ def load_pretrained(model, pretrained_path, checkpoint_key="model", checkpoint_p
 
 
 def build_backbone(img_size, embed_dim, depths, num_heads, window_size, drop_path_rate, mask, last_norm, pretrained_path):
-    model = SwinTransformer(img_size=img_size, embed_dim=embed_dim, depths=depths, num_heads=num_heads,
-                            window_size=window_size, drop_path_rate=drop_path_rate, mask=mask, last_norm=last_norm)
-    if pretrained_path:
-        load_pretrained(model, pretrained_path)
+    if len(depths) > 0:
+        model = SwinTransformer(img_size=img_size, embed_dim=embed_dim, depths=depths, num_heads=num_heads,
+                                window_size=window_size, drop_path_rate=drop_path_rate, mask=mask, last_norm=last_norm)
+        if pretrained_path:
+            load_pretrained(model, pretrained_path)
+    else:
+        class Identity(nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x, mask=None):
+                return x, []
+        model = Identity()
     return model

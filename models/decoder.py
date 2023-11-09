@@ -9,6 +9,8 @@ import torch
 import torch.nn as nn
 from diffusers.models.attention import BasicTransformerBlock
 
+from .xf import FrozenCLIPImageEmbedder
+
 
 class CrossAttnFirstTransformerBlock(BasicTransformerBlock):
     def forward(
@@ -97,71 +99,81 @@ class Decoder(nn.Module):
         self.last_norm = last_norm
         self.pose_query = pose_query
         self.pose_channel = pose_channel
+        self.depth = depth
 
-        n_layers = len(depths)
-        embed_dim = embed_dim * 2 ** (n_layers - 1)
+        if self.depth > 0:
+            n_layers = len(depths)
+            embed_dim = embed_dim * 2 ** (n_layers - 1)
 
-        if not self.pose_query:
-            self.query_feat = nn.Parameter(torch.zeros(n_ctx, ctx_dim))
-            nn.init.normal_(self.query_feat, std=0.02)
+            if not self.pose_query:
+                self.query_feat = nn.Parameter(torch.zeros(n_ctx, ctx_dim))
+                nn.init.normal_(self.query_feat, std=0.02)
+            else:
+                self.decoder_fc = nn.Linear(pose_channel, ctx_dim, bias=False)
+
+            self.pos_embed = nn.Parameter(torch.zeros(n_ctx, ctx_dim))
+            nn.init.normal_(self.pos_embed, std=0.02)
+
+            self.blocks = []
+            for _ in range(depth):
+                self.blocks.append(CrossAttnFirstTransformerBlock(
+                    dim=ctx_dim,
+                    num_attention_heads=heads,
+                    attention_head_dim=ctx_dim//heads,
+                    cross_attention_dim=embed_dim
+                ))
+            self.blocks = nn.ModuleList(self.blocks)
+
+            if not self.last_norm:
+                H, W = img_size[0] // 32, img_size[1] // 32
+                self.kv_pos_embed = nn.Parameter(torch.zeros(1, H*W, embed_dim))
+                nn.init.normal_(self.kv_pos_embed, std=0.02)
+
+            # enable xformers
+            def fn_recursive_set_mem_eff(module: torch.nn.Module):
+                if hasattr(module, "set_use_memory_efficient_attention_xformers"):
+                    module.set_use_memory_efficient_attention_xformers(True, attention_op=None)
+
+                for child in module.children():
+                    fn_recursive_set_mem_eff(child)
+
+            for module in self.children():
+                if isinstance(module, torch.nn.Module):
+                    fn_recursive_set_mem_eff(module)
         else:
-            self.decoder_fc = nn.Linear(pose_channel, ctx_dim, bias=False)
-
-        self.pos_embed = nn.Parameter(torch.zeros(n_ctx, ctx_dim))
-        nn.init.normal_(self.pos_embed, std=0.02)
-
-        self.blocks = []
-        for _ in range(depth):
-            self.blocks.append(CrossAttnFirstTransformerBlock(
-                dim=ctx_dim,
-                num_attention_heads=heads,
-                attention_head_dim=ctx_dim//heads,
-                cross_attention_dim=embed_dim
-            ))
-        self.blocks = nn.ModuleList(self.blocks)
-
-        if not self.last_norm:
-            H, W = img_size[0] // 32, img_size[1] // 32
-            self.kv_pos_embed = nn.Parameter(torch.zeros(1, H*W, embed_dim))
-            nn.init.normal_(self.kv_pos_embed, std=0.02)
-
-        # enable xformers
-        def fn_recursive_set_mem_eff(module: torch.nn.Module):
-            if hasattr(module, "set_use_memory_efficient_attention_xformers"):
-                module.set_use_memory_efficient_attention_xformers(True, attention_op=None)
-
-            for child in module.children():
-                fn_recursive_set_mem_eff(child)
-
-        for module in self.children():
-            if isinstance(module, torch.nn.Module):
-                fn_recursive_set_mem_eff(module)
+            self.clip_model = FrozenCLIPImageEmbedder()
 
     def forward(self, x, features, pose_features):
-        if self.last_norm:
-            B, C = x.shape
-            encoder_hidden_states = x.unsqueeze(1)
-        else:
-            B, L, C = features[-1].shape
-            encoder_hidden_states = features.pop()
-            kv_pos_embed = self.kv_pos_embed.expand(B, -1, -1)
-            encoder_hidden_states = encoder_hidden_states + kv_pos_embed
-
-        if self.pose_query:
-            hidden_states = pose_features.pop()
-            if self.training:
-                hidden_states = hidden_states.reshape(B*2, self.pose_channel, -1).permute(0, 2, 1)
-                pos_embed = self.pos_embed.expand(B*2, -1, -1)
-                encoder_hidden_states = torch.cat([encoder_hidden_states, encoder_hidden_states])
+        if self.depth > 0:
+            if self.last_norm:
+                B, C = x.shape
+                encoder_hidden_states = x.unsqueeze(1)
             else:
-                hidden_states = hidden_states.reshape(B, self.pose_channel, -1).permute(0, 2, 1)
+                B, L, C = features[-1].shape
+                encoder_hidden_states = features.pop()
+                kv_pos_embed = self.kv_pos_embed.expand(B, -1, -1)
+                encoder_hidden_states = encoder_hidden_states + kv_pos_embed
+
+            if self.pose_query:
+                hidden_states = pose_features.pop()
+                if self.training:
+                    hidden_states = hidden_states.reshape(B*2, self.pose_channel, -1).permute(0, 2, 1)
+                    pos_embed = self.pos_embed.expand(B*2, -1, -1)
+                    encoder_hidden_states = torch.cat([encoder_hidden_states, encoder_hidden_states])
+                else:
+                    hidden_states = hidden_states.reshape(B, self.pose_channel, -1).permute(0, 2, 1)
+                    pos_embed = self.pos_embed.expand(B, -1, -1)
+
+                hidden_states = self.decoder_fc(hidden_states)
+            else:
+                hidden_states = self.query_feat.expand(B, -1, -1)
                 pos_embed = self.pos_embed.expand(B, -1, -1)
 
-            hidden_states = self.decoder_fc(hidden_states)
+            for blk in self.blocks:
+                hidden_states = blk(hidden_states, pos_embed, encoder_hidden_states=encoder_hidden_states)
+            return hidden_states
         else:
-            hidden_states = self.query_feat.expand(B, -1, -1)
-            pos_embed = self.pos_embed.expand(B, -1, -1)
-
-        for blk in self.blocks:
-            hidden_states = blk(hidden_states, pos_embed, encoder_hidden_states=encoder_hidden_states)
-        return hidden_states
+            x = x * 0.5 + 0.5
+            x = x - torch.tensor([0.48145466, 0.4578275, 0.40821073]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
+            x = x / torch.tensor([0.26862954, 0.26130258, 0.27577711]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
+            return self.clip_model(x)

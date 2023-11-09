@@ -27,3 +27,4 @@ dependencies:
     - safetensors==0.3.1
     - scipy==1.10.1
     - lpips==0.1.4
+    - transformers==4.35.0
