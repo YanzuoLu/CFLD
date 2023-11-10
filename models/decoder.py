@@ -99,6 +99,7 @@ class Decoder(nn.Module):
         self.last_norm = last_norm
         self.pose_query = pose_query
         self.pose_channel = pose_channel
+        self.ctx_dim = ctx_dim
         self.depth = depth
 
         if self.depth > 0:
@@ -140,7 +141,7 @@ class Decoder(nn.Module):
             for module in self.children():
                 if isinstance(module, torch.nn.Module):
                     fn_recursive_set_mem_eff(module)
-        else:
+        elif self.depth == 0:
             self.clip_model = FrozenCLIPImageEmbedder()
 
     def forward(self, x, features, pose_features):
@@ -172,8 +173,13 @@ class Decoder(nn.Module):
             for blk in self.blocks:
                 hidden_states = blk(hidden_states, pos_embed, encoder_hidden_states=encoder_hidden_states)
             return hidden_states
-        else:
+        elif self.depth == 0:
             x = x * 0.5 + 0.5
             x = x - torch.tensor([0.48145466, 0.4578275, 0.40821073]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
             x = x / torch.tensor([0.26862954, 0.26130258, 0.27577711]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
             return self.clip_model(x)
+        else:
+            encoder_hidden_states = features.pop()
+            encoder_hidden_states = encoder_hidden_states * 0.
+            encoder_hidden_states = encoder_hidden_states.mean(dim=2, keepdim=True).expand(-1, -1, self.ctx_dim)
+            return encoder_hidden_states

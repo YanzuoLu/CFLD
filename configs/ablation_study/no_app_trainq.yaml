@@ -12,3 +12,6 @@ MODEL:
     CTX_DIMS: []
     EMBED_DIMS: []
     HEADS: []
+    CONVIN_KERNEL_SIZE: []
+    CONVIN_STRIDE: []
+    CONVIN_PADDING: []

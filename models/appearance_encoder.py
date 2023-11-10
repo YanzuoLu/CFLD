@@ -27,9 +27,10 @@ class AppearanceEncoder(nn.Module):
         self.zero_conv_ins = []
         self.zero_conv_outs = []
         self.blocks = []
-        for inner_dim, embed_dim, ctx_dim, num_head in zip(inner_dims, self.embed_dims, self.ctx_dims, heads):
-            self.zero_conv_ins.append(nn.Conv2d(inner_dim, embed_dim, kernel_size=convin_kernel_size,
-                                                stride=convin_stride, padding=convin_padding))
+        for inner_dim, embed_dim, ctx_dim, num_head, kernel_size, stride, padding in \
+            zip(inner_dims, self.embed_dims, self.ctx_dims, heads, convin_kernel_size, convin_stride, convin_padding):
+            self.zero_conv_ins.append(nn.Conv2d(inner_dim, embed_dim, kernel_size=kernel_size,
+                                                stride=stride, padding=padding))
             self.zero_conv_outs.append(nn.Conv2d(embed_dim, ctx_dim, kernel_size=1, stride=1, padding=0))
             self.blocks.append(nn.Sequential(*[BasicTransformerBlock(
                 dim=embed_dim,
@@ -87,7 +88,9 @@ class AppearanceEncoder(nn.Module):
                 elif self.to_values:
                     additional_residuals[f"block_{self.attn_residual_block_idx[i]}_self_attn_v"] = hidden_states
             else:
-                if self.to_queries:
+                if self.to_keys and self.to_values:
+                    additional_residuals[f"block_{self.attn_residual_block_idx[i]}_cross_attn_c"] = hidden_states
+                elif self.to_queries:
                     additional_residuals[f"block_{self.attn_residual_block_idx[i]}_cross_attn_q"] = hidden_states
                 elif self.to_keys:
                     additional_residuals[f"block_{self.attn_residual_block_idx[i]}_cross_attn_k"] = hidden_states

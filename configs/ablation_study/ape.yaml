@@ -1,0 +1,17 @@
+ACCELERATE:
+  RUN_NAME: "ape"
+  EVAL_PERIOD: 10
+
+MODEL:
+  APPEARANCE_GUIDANCE_CONFIG:
+    CONVIN_KERNEL_SIZE: [8, 8, 8, 4, 4, 4, 2, 2, 2]
+    CONVIN_STRIDE: [8, 8, 8, 4, 4, 4, 2, 2, 2]
+    CONVIN_PADDING: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    CTX_DIMS: [768, 768, 768, 768, 768, 768, 768, 768, 768]
+    TO_QUERIES: False
+    TO_KEYS: True
+    TO_VALUES: True
+
+  DECODER_CONFIG:
+    N_CTX: 64
+    DEPTH: -1

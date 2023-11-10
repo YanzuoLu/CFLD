@@ -67,6 +67,13 @@ class ResidualXFormersAttnProcessor(XFormersAttnProcessor):
         elif attn.norm_cross:
             encoder_hidden_states = attn.norm_encoder_hidden_states(encoder_hidden_states)
 
+        if not is_self_attn and additional_residuals and f"block_{block_idx}_cross_attn_c" in additional_residuals:
+            not_uc = (encoder_hidden_states - torch.zeros_like(encoder_hidden_states)).mean(dim=[1, 2], keepdim=False) < 1e-6
+            encoder_hidden_states[not_uc] = encoder_hidden_states[not_uc] + \
+                additional_residuals[f"block_{block_idx}_cross_attn_c"][not_uc]
+            encoder_hidden_states[~not_uc] = encoder_hidden_states[~not_uc] + \
+                additional_residuals[f"block_{block_idx}_cross_attn_c"][~not_uc] * 0.
+
         key = attn.to_k(encoder_hidden_states)
         value = attn.to_v(encoder_hidden_states)
 
