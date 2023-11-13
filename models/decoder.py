@@ -143,6 +143,10 @@ class Decoder(nn.Module):
                     fn_recursive_set_mem_eff(module)
         elif self.depth == 0:
             self.clip_model = FrozenCLIPImageEmbedder()
+        elif self.depth == -2:
+            n_layers = len(depths)
+            embed_dim = embed_dim * 2 ** (n_layers - 1)
+            self.decoder_fc = nn.Linear(embed_dim, ctx_dim, bias=False)
 
     def forward(self, x, features, pose_features):
         if self.depth > 0:
@@ -178,8 +182,12 @@ class Decoder(nn.Module):
             x = x - torch.tensor([0.48145466, 0.4578275, 0.40821073]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
             x = x / torch.tensor([0.26862954, 0.26130258, 0.27577711]).view(1, 3, 1, 1).to(dtype=x.dtype, device=x.device)
             return self.clip_model(x)
-        else:
+        elif self.depth == -1:
             encoder_hidden_states = features.pop()
             encoder_hidden_states = encoder_hidden_states * 0.
             encoder_hidden_states = encoder_hidden_states.mean(dim=2, keepdim=True).expand(-1, -1, self.ctx_dim)
+            return encoder_hidden_states
+        elif self.depth == -2:
+            encoder_hidden_states = features.pop()
+            encoder_hidden_states = self.decoder_fc(encoder_hidden_states)
             return encoder_hidden_states

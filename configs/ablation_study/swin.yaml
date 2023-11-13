@@ -1,0 +1,8 @@
+ACCELERATE:
+  RUN_NAME: "swin"
+  EVAL_PERIOD: 10
+
+MODEL:
+  DECODER_CONFIG:
+    N_CTX: 64
+    DEPTH: -2
