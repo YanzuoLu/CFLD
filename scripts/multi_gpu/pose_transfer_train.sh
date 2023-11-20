@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname "${CONDA_PYTHON_EXE}")/activate MSC
+source $(dirname "${CONDA_PYTHON_EXE}")/activate CFLD
 export CUDA_VISIBLE_DEVICES=$1
 export NUM_GPUS=$(echo $CUDA_VISIBLE_DEVICES | awk -F "," '{print NF}')
 shift
@@ -21,4 +21,4 @@ accelerate launch \
     --dynamo_backend "no" \
     --main_process_port $PORT \
     pose_transfer_train.py $@ \
-    INPUT.ROOT_DIR $HOME/datasets
+    INPUT.ROOT_DIR ./fashion

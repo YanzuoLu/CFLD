@@ -1,4 +1,4 @@
-name: MSC
+name: CFLD
 channels:
   - pytorch
   - nvidia

@@ -33,7 +33,7 @@ class PisTrainDeepFashion(Dataset):
         self.pred_ratio_var = pred_ratio_var
         self.psz = psz
 
-        root_dir = os.path.join(root_dir, "DeepFashion")
+        # root_dir = os.path.join(root_dir, "DeepFashion")
         train_dir = os.path.join(root_dir, "train_highres")
         train_pairs = os.path.join(root_dir, "fasion-resize-pairs-train.csv")
         train_pairs = pd.read_csv(train_pairs)
@@ -163,7 +163,7 @@ class PisTestDeepFashion(Dataset):
         super().__init__()
         self.pose_img_size = pose_img_size
 
-        root_dir = os.path.join(root_dir, "DeepFashion")
+        # root_dir = os.path.join(root_dir, "DeepFashion")
         test_pairs = os.path.join(root_dir, "fasion-resize-pairs-test.csv")
         test_pairs = pd.read_csv(test_pairs)
         self.img_items = self.process_dir(root_dir, test_pairs)
@@ -232,7 +232,7 @@ class PisTestDeepFashion(Dataset):
 class FidRealDeepFashion(Dataset):
     def __init__(self, root_dir, test_img_size):
         super().__init__()
-        root_dir = os.path.join(root_dir, "DeepFashion")
+        # root_dir = os.path.join(root_dir, "DeepFashion")
         train_dir = os.path.join(root_dir, "train_highres")
         self.img_items = self.process_dir(train_dir)
 
