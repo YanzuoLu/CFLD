@@ -1,6 +1,6 @@
 """
-@author: Yanzuo Lu
-@email:  luyz5@mail2.sysu.edu.cn
+@author: anonymous
+@email:  anonymous
 """
 
 import glob
