@@ -1,6 +1,14 @@
 # CFLD
 [CVPR 2024] Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis
 
+![pipeline](pipeline.png)
+
+## TL;DR
+If you want to cite and compare with out method, please download the generated images from [Google Drive](https://drive.google.com/drive/folders/1wNXt23C18G5eae8nl11jcdkZ1HqLlMHp?usp=sharing) here.
+(Including 256x176, 512x372 on DeepFashion, and 128x64 on Market-1501)
+
+![qualitative](qualitative.png)
+
 ## Preparation
 
 ### Install Environment
