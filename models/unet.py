@@ -1,6 +1,6 @@
 """
 @author: Yanzuo Lu
-@email:  anonymous
+@author: oliveryanzuolu@gmail.com
 """
 
 import torch

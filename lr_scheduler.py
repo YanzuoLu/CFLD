@@ -1,6 +1,6 @@
 """
-@author: anonymous
-@email:  anonymous
+@author: Yanzuo Lu
+@author: oliveryanzuolu@gmail.com
 """
 
 from bisect import bisect_right

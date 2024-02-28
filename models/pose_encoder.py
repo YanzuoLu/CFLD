@@ -1,6 +1,6 @@
 """
-@author: anonymous
-@email:  anonymous
+@author: Yanzuo Lu
+@author: oliveryanzuolu@gmail.com
 """
 
 import torch.nn as nn
