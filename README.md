@@ -1,5 +1,5 @@
 # CFLD
-Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis
+[CVPR 2024] Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis
 
 ## Preparation
 
@@ -73,4 +73,14 @@ bash scripts/multi_gpu/pose_transfer_test.sh 0,1,2,3,4,5,6,7 MODEL.PRETRAINED_PA
 For single-gpu, run the following command by example to specify checkpoints.
 ```
 bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH outputs/CFLD/no_app/epochs_100/checkpoints
+```
+
+## Citation
+```bibtex
+@inproceedings{lu2024coarse,
+  title={Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis},
+  author={Lu, Yanzuo and Zhang, Manlin and Ma, Andy J and Xie, Xiaohua and Lai, Jian-Huang},
+  booktitle={CVPR},
+  year={2024}
+}
 ```
