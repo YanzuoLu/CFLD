@@ -94,3 +94,7 @@ bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH outputs/CF
   year={2024}
 }
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date)](https://star-history.com/#YanzuoLu/CFLD&Date)
