@@ -98,4 +98,10 @@ bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH outputs/CF
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date)](https://star-history.com/#YanzuoLu/CFLD&Date)
+<a href="https://star-history.com/#YanzuoLu/CFLD&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date" />
+  </picture>
+</a>
