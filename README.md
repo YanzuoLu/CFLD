@@ -1,5 +1,7 @@
-# CFLD
+# CFLD [![arXiv](https://img.shields.io/badge/arXiv-2402.18078-b31b1b.svg)](https://arxiv.org/abs/2402.18078)
+
 [CVPR 2024] Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis
+
 
 ![pipeline](pipeline.png)
 
