@@ -1,6 +1,8 @@
 # CFLD [![arXiv](https://img.shields.io/badge/arXiv-2402.18078-b31b1b.svg)](https://arxiv.org/abs/2402.18078)
 
-[CVPR 2024] Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis
+> **Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis** <br>
+> _Yanzuo Lu, Manlin Zhang, Andy J Ma, Xiaohua Xie, Jian-Huang Lai_ <br>
+> _IEEE / CVF Computer Vision and Pattern Recognition Conference (**CVPR**), June 17-21, 2024, Seattle, USA_
 
 ![qualitative](qualitative.gif)
 
