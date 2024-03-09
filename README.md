@@ -8,9 +8,16 @@
 
 ## TL;DR
 If you want to cite and compare with out method, please download the generated images from [Google Drive](https://drive.google.com/drive/folders/1wNXt23C18G5eae8nl11jcdkZ1HqLlMHp?usp=sharing) here.
-(Including 256x176, 512x372 on DeepFashion, and 128x64 on Market-1501)
+(Including 256x176, 512x352 on DeepFashion, and 128x64 on Market-1501)
 
 ![pipeline](pipeline.png)
+
+## News🔥🔥🔥
+
+* _2024/02/27_&nbsp;&nbsp;Our paper titled "Coarse-to-Fine Latent Diffusion for Pose-Guided Person Image Synthesis" is accepted by CVPR 2024.
+* _2024/02/28_&nbsp;&nbsp;We release the code and upload the arXiv preprint.
+* _2024/03/09_&nbsp;&nbsp;The checkpoints on DeepFashion dataset is released on [Google Drive](https://drive.google.com/drive/folders/1s0DcLzBEugRFf20OEmFKiW3tsKoaOOAZ?usp=sharing).
+* _2024/03/09_&nbsp;&nbsp;We note that the file naming used by different open source codes can be extremely confusing. To facilitate future work, we have organized the generated images of several methods that we used for qualitative comparisons in the paper. They were uniformly resized to 256X176 or 512x352, stored as png files and used the same naming format. [Enjoy!](https://drive.google.com/drive/folders/1mtlxzStMXBZcFVrxq7UMtMJ_bh_FNKKE?usp=drive_link)🤗
 
 ## Preparation
 
@@ -79,11 +86,11 @@ bash scripts/multi_gpu/pose_transfer_train.sh 0,1,2,3,4,5,6,7 --config_file conf
 ## Inference
 For multi-gpu, run the following command by example to specify checkpoints.
 ```
-bash scripts/multi_gpu/pose_transfer_test.sh 0,1,2,3,4,5,6,7 MODEL.PRETRAINED_PATH outputs/CFLD/no_app/epochs_100/checkpoints
+bash scripts/multi_gpu/pose_transfer_test.sh 0,1,2,3,4,5,6,7 MODEL.PRETRAINED_PATH checkpoints
 ```
 For single-gpu, run the following command by example to specify checkpoints.
 ```
-bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH outputs/CFLD/no_app/epochs_100/checkpoints
+bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH checkpoints
 ```
 
 ## Citation
