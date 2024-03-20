@@ -18,6 +18,7 @@ If you want to cite and compare with out method, please download the generated i
 * _2024/02/28_&nbsp;&nbsp;We release the code and upload the arXiv preprint.
 * _2024/03/09_&nbsp;&nbsp;The checkpoints on DeepFashion dataset is released on [Google Drive](https://drive.google.com/drive/folders/1s0DcLzBEugRFf20OEmFKiW3tsKoaOOAZ?usp=sharing).
 * _2024/03/09_&nbsp;&nbsp;We note that the file naming used by different open source codes can be extremely confusing. To facilitate future work, we have organized the generated images of several methods that we used for qualitative comparisons in the paper. They were uniformly resized to 256X176 or 512x352, stored as png files and used the same naming format. [Enjoy!](https://drive.google.com/drive/folders/1mtlxzStMXBZcFVrxq7UMtMJ_bh_FNKKE?usp=drive_link)🤗
+* _2024/03/20_&nbsp;&nbsp;We upload the jupyter notebook for inference/reasoning. You could modify it as you want, e.g. replacing the conditional image with your customized one and randomly sampling a target pose from the test dataset.
 
 ## Preparation
 
