@@ -28,7 +28,7 @@ conda env create -f environment.yaml
 ```
 
 ### Download DeepFashion Dataset
-* Download [Img/img_highres.zip](https://drive.google.com/drive/folders/0B7EVK8r0v71pYkd5TzBiclMzR00?resourcekey=0-fsjVShvqXP2517KnwaZ0zw) from the **In-shop Clothes Retrieval Benchmark** of [DeepFashion](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion/InShopRetrieval.html), unzip it under `./fashion` directory. (Password would be required, please contact the authors for permission.)
+* Download [Img/img_highres.zip](https://drive.google.com/drive/folders/0B7EVK8r0v71pYkd5TzBiclMzR00?resourcekey=0-fsjVShvqXP2517KnwaZ0zw) from the **In-shop Clothes Retrieval Benchmark** of [DeepFashion](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion/InShopRetrieval.html), unzip it under `./fashion` directory. (Password would be required, please contact the authors of DeepFashion (not us!!!) for permission.)
 * Download [train/test pairs and keypoints](https://drive.google.com/drive/folders/1qZDod3QDD7PaBxnNyHCuLBR7ftTSkSE1?usp=sharing) from [DPTN](https://github.com/PangzeCheung/Dual-task-Pose-Transformer-Network), put them under `./fashion` directory.
 * Make sure the tree of `./fashion` directory is as follows.
     ```
