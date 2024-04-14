@@ -20,7 +20,7 @@ If you want to cite and compare with out method, please download the generated i
 * _2024/03/09_&nbsp;&nbsp;We note that the file naming used by different open source codes can be extremely confusing. To facilitate future work, we have organized the generated images of several methods that we used for qualitative comparisons in the paper. They were uniformly resized to 256X176 or 512x352, stored as png files and used the same naming format. [Enjoy!](https://drive.google.com/drive/folders/1mtlxzStMXBZcFVrxq7UMtMJ_bh_FNKKE?usp=drive_link)🤗
 * _2024/03/20_&nbsp;&nbsp;We upload the [jupyter notebook](https://github.com/YanzuoLu/CFLD/blob/main/playground.ipynb) for inference/reasoning. You could modify it as you want, e.g. replacing the conditional image with your customized one and randomly sampling a target pose from the test dataset.
 * _2024/04/05_&nbsp;&nbsp;Our paper is accepted as CVPR 2024 Highlight!!!
-* _2024/04/10_&nbsp;&nbsp;The camera-ready version is available on arXiv now. The supplementary material was added.
+* _2024/04/10_&nbsp;&nbsp;The camera-ready version is available on arXiv now. The supplementary material with more discussions and results was added.
 
 ## Preparation
 
@@ -105,13 +105,3 @@ bash scripts/single_gpu/pose_transfer_test.sh 0 MODEL.PRETRAINED_PATH checkpoint
   year={2024}
 }
 ```
-
-## Star History
-
-<a href="https://star-history.com/#YanzuoLu/CFLD&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=YanzuoLu/CFLD&type=Date" />
-  </picture>
-</a>
