@@ -50,8 +50,8 @@ conda env create -f environment.yaml
 * Download the following pre-trained models on demand, put them under `./pretrained_models` directory.
     | Model | Official Repository | Publicly Available |
     | ----- | ------------------- | ------------------ |
-    | U-Net | [runwayml/stable-diffusion-v1-5](https://huggingface.co/runwayml/stable-diffusion-v1-5) | [diffusion_pytorch_model.safetensors](https://huggingface.co/runwayml/stable-diffusion-v1-5/blob/main/unet/diffusion_pytorch_model.safetensors)
-    | VAE | [runwayml/stable-diffusion-v1-5](https://huggingface.co/runwayml/stable-diffusion-v1-5) | [diffusion_pytorch_model.safetensors](https://huggingface.co/runwayml/stable-diffusion-v1-5/blob/main/vae/diffusion_pytorch_model.safetensors) |
+    | U-Net | [stable-diffusion-v1-5/stable-diffusion-v1-5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5) | [diffusion_pytorch_model.safetensors](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/blob/main/unet/diffusion_pytorch_model.bin)
+    | VAE | [stable-diffusion-v1-5/stable-diffusion-v1-5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5) | [diffusion_pytorch_model.safetensors](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/blob/main/vae/diffusion_pytorch_model.safetensors) |
     | Swin-B | [microsoft/Swin-Transformer](https://github.com/microsoft/Swin-Transformer) | [swin_base_patch4_window12_384_22kto1k.pth](https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window12_384_22kto1k.pth)
     | CLIP (ablation only) | [openai/clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) | [model.satetensors](https://huggingface.co/openai/clip-vit-large-patch14/blob/main/model.safetensors) |
 * Make sure the tree of `./pretrained_models` directory is as follows.
